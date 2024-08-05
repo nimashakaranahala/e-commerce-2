@@ -82,7 +82,7 @@ func (u *HTTPHandler) LoginUser(c *gin.Context) {
 	c.Header("refresh_token", *refreshToken)
 
 	util.Response(c, "Login successful", 200, gin.H{
-		"user": user,
+		"user":          user,
 		"access_token":  accessToken,
 		"refresh_token": refreshToken,
 	}, nil)
