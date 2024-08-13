@@ -37,6 +37,8 @@ func SetupRouter(handler *api.HTTPHandler, repository ports.Repository) *gin.Eng
 	user.Use(middleware.AuthorizeUser(repository.FindUserByEmail, repository.TokenInBlacklist))
 	{
 		user.POST("/logout", handler.Logout)
+		user.GET("/allproducts", handler.GetAllProducts)
+		user.GET("/product/:id", handler.GetProductByID)
 	}
 
 	seller := r.Group("/seller")
