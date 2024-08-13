@@ -27,7 +27,7 @@ func Initialize(dbURI string) (*gorm.DB, error) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = conn.AutoMigrate(&models.User{}, &models.Seller{}, &models.BlacklistTokens{})
+	err = conn.AutoMigrate(&models.User{}, &models.Seller{}, &models.BlacklistTokens{}, &models.Product{})
 	if err != nil {
 		return nil, err
 	}

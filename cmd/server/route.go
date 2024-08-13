@@ -49,6 +49,7 @@ func SetupRouter(handler *api.HTTPHandler, repository ports.Repository) *gin.Eng
 	seller.Use(middleware.AuthorizeSeller(repository.FindSellerByEmail, repository.TokenInBlacklist))
 	{
 		seller.POST("/logout", handler.Logout)
+		seller.POST("/createproduct", handler.CreateProduct)
 	}
 
 	return router

@@ -47,3 +47,21 @@ func (p *Postgres) UpdateUser(user *models.User) error {
 	}
 	return nil
 }
+
+func (p *Postgres) GetProductByID(productID uint) (*models.Product, error) {
+	product := &models.Product{}
+
+	if err := p.DB.Where("ID = ?", productID).First(&product).Error; err != nil {
+		return nil, err
+	}
+	return product, nil
+}
+
+func (p *Postgres) GetAllProducts() ([]models.Product, error) {
+	var products []models.Product
+
+	if err := p.DB.Find(&products).Error; err != nil {
+		return nil, err
+	}
+	return products, nil
+}

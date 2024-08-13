@@ -26,3 +26,10 @@ func (p *Postgres) UpdateSeller(seller *models.Seller) error {
 	}
 	return nil
 }
+
+func (p *Postgres) CreateProduct(product *models.Product) error {
+	if err := p.DB.Create(product).Error; err != nil {
+		return err
+	}
+	return nil
+}

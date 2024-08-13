@@ -93,3 +93,29 @@ func (u *HTTPHandler) LoginSeller(c *gin.Context) {
 		"refresh_token": refreshToken,
 	}, nil)
 }
+
+func (u *HTTPHandler) CreateProduct(c *gin.Context) {
+	seller, err := u.GetSellerFromContext(c)
+	if err != nil {
+		util.Response(c, "invalid token", 401, err.Error(), nil)
+		return
+	}
+
+	var product *models.Product
+	if err := c.ShouldBind(&product); err != nil {
+		util.Response(c, "invalid request", 401, err.Error(), nil)
+		return
+	}
+
+	product.SellerID = seller.ID
+	product.Status = false
+
+	err = u.Repository.CreateProduct(product)
+	if err != nil {
+		util.Response(c, "product not created", 500, err.Error(), nil)
+		return
+	}
+
+	util.Response(c, "product created successfully", 201, nil, nil)
+
+}

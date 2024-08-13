@@ -18,3 +18,9 @@ func main() {
 	//Runs the app
 	server.Run(db, env.Port)
 }
+
+// application
+
+// database
+
+// Create   Read    Update   Delete

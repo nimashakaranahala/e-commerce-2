@@ -5,6 +5,7 @@ import (
 	"e-commerce/internal/models"
 	"e-commerce/internal/util"
 	"os"
+	"strconv"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
@@ -86,4 +87,30 @@ func (u *HTTPHandler) LoginUser(c *gin.Context) {
 		"access_token":  accessToken,
 		"refresh_token": refreshToken,
 	}, nil)
+}
+
+// View Product listing
+func (u *HTTPHandler) GetAllProducts(c *gin.Context) {
+	products, err := u.Repository.GetAllProducts()
+	if err != nil {
+		util.Response(c, "Error getting products", 500, err.Error(), nil)
+		return
+	}
+	util.Response(c, "Success", 200, products, nil)
+}
+
+// View Product by ID
+func (u *HTTPHandler) GetProductByID(c *gin.Context) {
+	productID := c.Param("id")
+	id, err:= strconv.Atoi(productID)
+	if err != nil {
+		util.Response(c, "Error getting product", 500, err.Error(), nil)
+		return
+	}
+	product, err := u.Repository.GetProductByID(uint(id))
+	if err != nil {
+		util.Response(c, "Error getting product", 500, err.Error(), nil)
+		return
+	}
+	util.Response(c, "Success", 200, product, nil)
 }

@@ -41,7 +41,7 @@ func AuthorizeSeller(findSellerByEmail func(string) (*models.Seller, error), tok
 		}
 
 		// set the Seller and token as context parameters.
-		c.Set("Seller", seller)
+		c.Set("seller", seller)
 		c.Set("access_token", accessToken.Raw)
 
 		// calling next handler

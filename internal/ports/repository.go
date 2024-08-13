@@ -13,4 +13,7 @@ type Repository interface {
 	UpdateSeller(user *models.Seller) error
 	BlacklistToken(token *models.BlacklistTokens) error
 	TokenInBlacklist(token *string) bool
+	CreateProduct(product *models.Product) error
+	GetProductByID(productID uint) (*models.Product, error)
+	GetAllProducts() ([]models.Product, error)
 }
