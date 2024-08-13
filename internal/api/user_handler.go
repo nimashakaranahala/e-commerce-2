@@ -91,6 +91,12 @@ func (u *HTTPHandler) LoginUser(c *gin.Context) {
 
 // View Product listing
 func (u *HTTPHandler) GetAllProducts(c *gin.Context) {
+		_, err := u.GetUserFromContext(c)
+	if err != nil {
+		util.Response(c, "invalid token", 401, err.Error(), nil)
+		return
+	}
+
 	products, err := u.Repository.GetAllProducts()
 	if err != nil {
 		util.Response(c, "Error getting products", 500, err.Error(), nil)
@@ -101,6 +107,12 @@ func (u *HTTPHandler) GetAllProducts(c *gin.Context) {
 
 // View Product by ID
 func (u *HTTPHandler) GetProductByID(c *gin.Context) {
+	_, err := u.GetUserFromContext(c)
+	if err != nil {
+		util.Response(c, "invalid token", 401, err.Error(), nil)
+		return
+	}
+	
 	productID := c.Param("id")
 	id, err:= strconv.Atoi(productID)
 	if err != nil {
