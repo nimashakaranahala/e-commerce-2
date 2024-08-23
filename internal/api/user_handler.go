@@ -91,7 +91,7 @@ func (u *HTTPHandler) LoginUser(c *gin.Context) {
 
 // View Product listing
 func (u *HTTPHandler) GetAllProducts(c *gin.Context) {
-		_, err := u.GetUserFromContext(c)
+	_, err := u.GetUserFromContext(c)
 	if err != nil {
 		util.Response(c, "invalid token", 401, err.Error(), nil)
 		return
@@ -112,9 +112,9 @@ func (u *HTTPHandler) GetProductByID(c *gin.Context) {
 		util.Response(c, "invalid token", 401, err.Error(), nil)
 		return
 	}
-	
+
 	productID := c.Param("id")
-	id, err:= strconv.Atoi(productID)
+	id, err := strconv.Atoi(productID)
 	if err != nil {
 		util.Response(c, "Error getting product", 500, err.Error(), nil)
 		return
@@ -125,4 +125,48 @@ func (u *HTTPHandler) GetProductByID(c *gin.Context) {
 		return
 	}
 	util.Response(c, "Success", 200, product, nil)
+}
+
+// AddToCart adds a product to the user's cart
+func (u *HTTPHandler) AddToCart(c *gin.Context) {
+
+	user, err := u.GetUserFromContext(c)
+	if err != nil {
+		util.Response(c, "invalid token", 401, err.Error(), nil)
+		return
+	}
+
+	var requestBody struct {
+		ProductID uint `json:"product_id"`
+		Quantity  int  `json:"quantity"`
+	}
+
+	// Bind the request body
+	if err := c.ShouldBindJSON(&requestBody); err != nil {
+		util.Response(c, "Invalid request", 401, err.Error(), nil)
+		return
+	}
+
+	// Check if the product exists
+	product, err := u.Repository.GetProductByID(requestBody.ProductID)
+	if err != nil {
+		util.Response(c, "Product not found", 500, err.Error(), nil)
+		return
+	}
+
+	// Create a new cart item
+	cart := &models.Cart{
+		SellerID:  user.ID,
+		ProductID: product.ID,
+		Quantity:  requestBody.Quantity,
+	}
+
+	// Add the item to the cart
+	err = u.Repository.AddToCart(cart)
+	if err != nil {
+		util.Response(c, "Could not add to cart", 500, err.Error(), nil)
+		return
+	}
+
+	util.Response(c, "Product added to cart", 200, cart, nil)
 }
