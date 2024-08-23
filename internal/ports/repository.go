@@ -18,5 +18,8 @@ type Repository interface {
 	GetAllProducts() ([]models.Product, error)
 
 	// Add the AddToCart method
+	AddToCart(cart *models.Cart) error
+
+	// Add the AddToCart method
     ViewCart(cart *models.Cart) error
 }

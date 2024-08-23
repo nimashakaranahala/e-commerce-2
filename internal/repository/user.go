@@ -65,6 +65,10 @@ func (p *Postgres) GetAllProducts() ([]models.Product, error) {
 	}
 	return products, nil
 }
+
+func (r *Postgres) AddToCart(cart *models.Cart) error {
+    return r.DB.Create(cart).Error
+}
  func (p *Postgres) GetCartByUserID(userID uint) (*models.Cart, error) {
     var cart models.Cart
     if err := p.DB.Where("user_id = ?", userID).Preload("Items.Product").First(&cart).Error; err != nil {
