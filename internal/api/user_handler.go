@@ -129,7 +129,6 @@ func (u *HTTPHandler) GetProductByID(c *gin.Context) {
 
 // AddToCart adds a product to the user's cart
 func (u *HTTPHandler) AddToCart(c *gin.Context) {
-
 	user, err := u.GetUserFromContext(c)
 	if err != nil {
 		util.Response(c, "invalid token", 401, err.Error(), nil)
@@ -174,4 +173,20 @@ func (u *HTTPHandler) AddToCart(c *gin.Context) {
 	}
 
 	util.Response(c, "Product added to cart", 200, cart, nil)
+}
+
+func (u *HTTPHandler) ViewCart(c *gin.Context) {
+	user, err := u.GetUserFromContext(c)
+	if err != nil {
+		util.Response(c, "Invalid token", 401, err.Error(), nil)
+		return
+	}
+
+	cartItems, err := u.Repository.GetCartsByUserID(user.ID)
+	if err != nil {
+		util.Response(c, "Error retrieving cart", 500, err.Error(), nil)
+		return
+	}
+
+	util.Response(c, "Cart retrieved", 200, cartItems, nil)
 }
