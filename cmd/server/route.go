@@ -41,7 +41,7 @@ func SetupRouter(handler *api.HTTPHandler, repository ports.Repository) *gin.Eng
 		user.GET("/product/:id", handler.GetProductByID)
 		user.GET("/cart", handler.ViewCart) //view cart
 		user.POST("/cart/add", handler.AddToCart) // Add to Cart route
-		user.GET("/cart", handler.ViewCart) //view cart
+		user.GET("/cart/view", handler.ViewCart) //view cart
 	}
 
 	seller := r.Group("/seller")
