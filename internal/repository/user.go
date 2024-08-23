@@ -65,3 +65,7 @@ func (p *Postgres) GetAllProducts() ([]models.Product, error) {
 	}
 	return products, nil
 }
+
+func (p *Postgres) AddToCart(cart *models.Cart) error {
+	return p.DB.Create(cart).Error
+}
