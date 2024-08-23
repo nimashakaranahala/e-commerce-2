@@ -2,6 +2,7 @@ package repository
 
 import (
 	"e-commerce/internal/models"
+	"errors"
 )
 
 func (p *Postgres) FindUserByEmail(email string) (*models.User, error) {
@@ -69,10 +70,19 @@ func (p *Postgres) GetAllProducts() ([]models.Product, error) {
 func (p *Postgres) AddToCart(cart *models.Cart) error {
 	return p.DB.Create(cart).Error
 }
- func (p *Postgres) GetCartByUserID(userID uint) (*models.Cart, error) {
-    var cart models.Cart
-    if err := p.DB.Where("user_id = ?", userID).Preload("Items.Product").First(&cart).Error; err != nil {
-        return nil, err
-    }
-    return &cart, nil
-} 
+
+func (p *Postgres) GetCartsByUserID(userID uint) ([]*models.Cart, error) {
+	var cartItems []*models.Cart
+
+	// Fetch cart items for the user with null OrderID
+	if err := p.DB.Where("user_id = ? AND order_id IS NULL", userID).Find(&cartItems).Error; err != nil {
+		return nil, err
+	}
+
+	// If no items found, return an error
+	if len(cartItems) == 0 {
+		return nil, errors.New("no items found in cart")
+	}
+
+	return cartItems, nil
+}

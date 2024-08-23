@@ -183,7 +183,7 @@ func (u *HTTPHandler) AddToCart(c *gin.Context) {
         return
     }
 
-    cartItems, err := u.Repository.GetCartItems(user.ID)
+    cartItems, err := u.Repository.GetCartsByUserID(user.ID)
     if err != nil {
         util.Response(c, "Error retrieving cart", 500, err.Error(), nil)
         return
