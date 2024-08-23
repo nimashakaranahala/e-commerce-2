@@ -154,9 +154,14 @@ func (u *HTTPHandler) AddToCart(c *gin.Context) {
 		return
 	}
 
+	if product.Quantity < requestBody.Quantity {
+		util.Response(c, "Quantity requested is more than available", 400, nil, nil)
+		return
+	}
+
 	// Create a new cart item
 	cart := &models.Cart{
-		SellerID:  user.ID,
+		UserID:    user.ID,
 		ProductID: product.ID,
 		Quantity:  requestBody.Quantity,
 	}
