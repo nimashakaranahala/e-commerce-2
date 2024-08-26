@@ -69,3 +69,7 @@ func (p *Postgres) GetAllProducts() ([]models.Product, error) {
 func (r *Postgres) AddToCart(cart *models.Cart) error {
     return r.DB.Create(cart).Error
 }
+
+func (r *Postgres) RemoveItemFromCart(userID uint, productID uint) error {
+    return r.DB.Where("user_id = ? AND product_id = ?", userID, productID).Delete(&models.Cart{}).Error
+}

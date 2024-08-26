@@ -170,3 +170,32 @@ func (u *HTTPHandler) AddToCart(c *gin.Context) {
 
 	util.Response(c, "Product added to cart", 200, cart, nil)
 }
+
+//RemoveFromCart
+func (u *HTTPHandler) RemoveFromCart(c *gin.Context) {
+    // Get the user from the context
+    user, err := u.GetUserFromContext(c)
+    if err != nil {
+        util.Response(c, "Invalid token", 401, err.Error(), nil)
+        return
+    }
+
+    var requestBody struct {
+        ProductID uint `json:"product_id"`
+    }
+
+   
+    if err := c.ShouldBindJSON(&requestBody); err != nil {
+        util.Response(c, "Invalid request", 400, err.Error(), nil)
+        return
+    }
+
+  
+    err = u.Repository.RemoveItemFromCart(user.ID, requestBody.ProductID)
+    if err != nil {
+        util.Response(c, "Could not remove item from cart", 500, err.Error(), nil)
+        return
+    }
+
+    util.Response(c, "Item removed from cart", 200, nil, nil)
+}

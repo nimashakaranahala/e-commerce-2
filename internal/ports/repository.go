@@ -19,4 +19,7 @@ type Repository interface {
 
 	// Add the AddToCart method
 	AddToCart(cart *models.Cart) error
+
+	// Add the method to remove an item from the cart
+	RemoveItemFromCart(userID uint, productID uint) error
 }
