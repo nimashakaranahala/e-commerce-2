@@ -222,3 +222,51 @@ func (u *HTTPHandler) RemoveFromCart(c *gin.Context) {
 
     util.Response(c, "Item removed from cart", 200, nil, nil)
 }
+
+// edit cart
+func (u *HTTPHandler) EditCart(c *gin.Context) {
+	// Get user id from context
+	user, err := u.GetUserFromContext(c)
+	if err != nil {
+		util.Response(c, "Error getting user from context", 500, err.Error(), nil)
+		return
+	}
+
+	// Bind request to struct
+	var cart *models.Cart
+	if err := c.ShouldBind(&cart); err != nil {
+		util.Response(c, "invalid request", 400, err.Error(), nil)
+		return
+	}
+
+	// Get cart by user id
+	shoppingCart, err := u.Repository.GetCartItemByProductID(cart.ProductID)
+	if err != nil {
+		util.Response(c, "Cart not found", 404, err.Error(), nil)
+		return
+	}
+
+	// Validate request
+	product, err := u.Repository.GetProductByID(cart.ProductID)
+	if err != nil {
+		util.Response(c, "Product not found", 404, err.Error(), nil)
+		return
+	}
+
+	// Check if product quantity is less
+	if product.Quantity < cart.Quantity {
+		util.Response(c, "Product quantity is less", 400, nil, nil)
+		return
+	}
+
+	// Update cart
+	cart.UserID = user.ID
+	cart.ID = shoppingCart.ID
+
+	err = u.Repository.AddToCart(cart)
+	if err != nil {
+		util.Response(c, "Internal server error", 500, err.Error(), nil)
+		return
+	}
+	util.Response(c, "Cart updated", 200, nil, nil)
+}

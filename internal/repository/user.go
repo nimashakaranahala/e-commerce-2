@@ -68,7 +68,7 @@ func (p *Postgres) GetAllProducts() ([]models.Product, error) {
 }
 
 func (p *Postgres) AddToCart(cart *models.Cart) error {
-	return p.DB.Create(cart).Error
+	return p.DB.Save(cart).Error
 }
 
 func (p *Postgres) GetCartsByUserID(userID uint) ([]*models.Cart, error) {
