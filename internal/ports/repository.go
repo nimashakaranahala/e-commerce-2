@@ -16,6 +16,8 @@ type Repository interface {
 	CreateProduct(product *models.Product) error
 	GetProductByID(productID uint) (*models.Product, error)
 	GetAllProducts() ([]models.Product, error)
+	AddToCart(cart *models.Cart) error
+	GetCartsByUserID(userID uint) ([]*models.Cart, error)
 
 	// Add the method to remove an item from the cart
 	RemoveItemFromCart(userID uint, productID uint) error
