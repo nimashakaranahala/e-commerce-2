@@ -68,7 +68,7 @@ func (p *Postgres) GetAllProducts() ([]models.Product, error) {
 }
 
 func (p *Postgres) AddToCart(cart *models.Cart) error {
-	return p.DB.Create(cart).Error
+	return p.DB.Save(cart).Error
 }
 
 func (p *Postgres) GetCartsByUserID(userID uint) ([]*models.Cart, error) {
@@ -85,4 +85,17 @@ func (p *Postgres) GetCartsByUserID(userID uint) ([]*models.Cart, error) {
 	}
 
 	return cartItems, nil
+}
+
+func (p *Postgres) GetCartItemByProductID(productID uint) (*models.Cart, error) {
+	cart := &models.Cart{}
+
+	if err := p.DB.Where("ID = ?", productID).First(&cart).Error; err != nil {
+		return nil, err
+	}
+	return cart, nil
+}
+
+func (r *Postgres) RemoveItemFromCart(userID uint, productID uint) error {
+	return r.DB.Where("user_id = ? AND product_id = ?", userID, productID).Delete(&models.Cart{}).Error
 }
